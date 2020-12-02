@@ -1,3 +1,3 @@
-module mkimg
+module mkpng
 
 go 1.14

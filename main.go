@@ -16,16 +16,38 @@ const DefaultFilenameTemplate = "image-%d-%d.png"
 func main() {
 	width := flag.Int("width", 0, "width of the image")
 	height := flag.Int("height", 0, "height of the image")
+	file := flag.String("file", "", "file to read from")
 
 	flag.Parse()
 
-	if *width == 0 || *height == 0 {
-		log.Fatal("Zero values are not allowed")
+	hasAnyResolutions := *width != 0 || *height != 0
+	hasValidResolutionPair := *width != 0 && *height != 0
+	hasFile := *file != ""
+
+	if hasValidResolutionPair == false && hasFile == false {
+		log.Fatal("Omitting parameters is not allowed")
 	}
 
+	if hasValidResolutionPair && hasFile == false {
+		fmt.Println("Creating image from cli provided dimensions")
+		flow(width, height)
+		return
+	}
+
+	if hasFile && hasAnyResolutions {
+		log.Fatal("cant specify both file and resolution cli args")
+	}
+
+	if hasFile {
+		fmt.Println("Processing file input")
+		processFile(file)
+	}
+
+}
+
+func flow(width *int, height *int) {
 	img := createImage(*width, *height)
 	encodeImage(*width, *height, img)
-
 }
 
 func createImage(width int, height int) *image.RGBA {
