@@ -17,7 +17,7 @@ func processFile(filename *string) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		width, height := processLine(scanner.Text())
-		flow(&width, &height)
+		createImageFile(&width, &height)
 	}
 
 	if err := scanner.Err(); err != nil {

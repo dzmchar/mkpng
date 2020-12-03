@@ -30,7 +30,7 @@ func main() {
 
 	if hasValidResolutionPair && hasFile == false {
 		fmt.Println("Creating image from cli provided dimensions")
-		flow(width, height)
+		createImageFile(width, height)
 		return
 	}
 
@@ -45,12 +45,12 @@ func main() {
 
 }
 
-func flow(width *int, height *int) {
-	img := createImage(*width, *height)
+func createImageFile(width *int, height *int) {
+	img := createRGBA(*width, *height)
 	encodeImage(*width, *height, img)
 }
 
-func createImage(width int, height int) *image.RGBA {
+func createRGBA(width int, height int) *image.RGBA {
 	upLeft := image.Point{0, 0}
 	lowRight := image.Point{width, height}
 
@@ -63,12 +63,10 @@ func createImage(width int, height int) *image.RGBA {
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
 			switch {
-			case x < width/2 && y < height/2: // upper left quadrant
+			case x < width/2 && y < height/2:
 				img.Set(x, y, cyan)
-			case x >= width/2 && y >= height/2: // lower right quadrant
+			case x >= width/2 && y >= height/2:
 				img.Set(x, y, color.White)
-			default:
-				// Use zero value.
 			}
 		}
 	}
@@ -76,7 +74,6 @@ func createImage(width int, height int) *image.RGBA {
 }
 
 func encodeImage(width int, height int, img *image.RGBA) {
-	// Encode as PNG.
 	f, _ := os.Create(fmt.Sprintf(DefaultFilenameTemplate, width, height))
 	png.Encode(f, img)
 }
